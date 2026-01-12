@@ -60,7 +60,9 @@ const ReportOutage = () => {
 
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            // Remove trailing slash if present to avoid double slashes
+            apiUrl = apiUrl.replace(/\/$/, "");
             const response = await fetch(`${apiUrl}/api/report`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -75,7 +77,8 @@ const ReportOutage = () => {
                 setMessage("Error: " + data.error);
             }
         } catch (err) {
-            setMessage("Failed to connect to server.");
+            console.error("Report submission error:", err);
+            setMessage(`Failed to connect to server: ${err.message}`);
         } finally {
             setLoading(false);
         }
