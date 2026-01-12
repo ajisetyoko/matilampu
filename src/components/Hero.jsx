@@ -1,7 +1,7 @@
 import React from 'react';
 import './Hero.css';
 
-const Hero = ({ activeCount = 0 }) => {
+const Hero = ({ activeCount = 0, affectedCount = 0, avgRestoration = '-' }) => {
     return (
         <section className="hero">
             <div className="container hero-content">
@@ -18,11 +18,11 @@ const Hero = ({ activeCount = 0 }) => {
                         <span className="stat-label">Active Outages</span>
                     </div>
                     <div className="stat-item">
-                        <span className="stat-value">4.5k</span>
+                        <span className="stat-value">{affectedCount > 1000 ? (affectedCount / 1000).toFixed(1) + 'k' : affectedCount}</span>
                         <span className="stat-label">Affected Users</span>
                     </div>
                     <div className="stat-item">
-                        <span className="stat-value">2h</span>
+                        <span className="stat-value">{avgRestoration}</span>
                         <span className="stat-label">Avg. Restoration</span>
                     </div>
                 </div>

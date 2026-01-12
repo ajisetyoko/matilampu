@@ -30,9 +30,16 @@ const Home = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Calculate dynamic stats from outages
+    const activeCount = outages.length;
+    // Mock: Approx 150-1200 users per outage
+    const affectedCount = outages.reduce((acc, curr) => acc + (Math.floor(curr.id * 13 % 1000) + 150), 0);
+    // Mock: Avg Restoration is hard to guess, but let's say 2.5h avg
+    const avgRestoration = activeCount > 0 ? "2.5h" : "-";
+
     return (
         <>
-            <Hero activeCount={outages.length} />
+            <Hero activeCount={activeCount} affectedCount={affectedCount} avgRestoration={avgRestoration} />
             <MapSection outages={outages} />
         </>
     );

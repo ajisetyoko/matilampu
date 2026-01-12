@@ -116,6 +116,28 @@ app.post('/api/report', async (req, res) => {
     }
 });
 
+// GET /api/init - Force DB initialization (useful for Vercel if race condition occurred)
+app.get('/api/init', async (req, res) => {
+    try {
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS outages (
+                id SERIAL PRIMARY KEY,
+                lat REAL,
+                lng REAL,
+                city TEXT,
+                area TEXT,
+                cause TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                status TEXT DEFAULT 'Active'
+            );
+        `);
+        res.json({ message: "Database initialized (Table 'outages' created/verified)." });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to initialize DB: " + err.message });
+    }
+});
+
 // Catch-all
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
