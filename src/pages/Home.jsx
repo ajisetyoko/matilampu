@@ -8,7 +8,8 @@ const Home = () => {
     useEffect(() => {
         const fetchOutages = async () => {
             try {
-                const apiUrl = import.meta.env.PROD ? '' : 'http://localhost:3001';
+                // Use env var for separate backend, or localhost for local dev
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
                 const response = await fetch(`${apiUrl}/api/outages`);
                 const data = await response.json();
                 if (data.data) {

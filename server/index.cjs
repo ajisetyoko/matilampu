@@ -8,10 +8,17 @@ const db = require('./database.cjs');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Enable CORS for Vercel frontend
 app.use(cors());
+
+// Middleware
 app.use(bodyParser.json());
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../dist')));
+
+// Routes... (keep existing API routes)
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 // Helper: Calculate distance between two coords (Haversine approximation)
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -139,16 +146,14 @@ app.get('/api/init', async (req, res) => {
 });
 
 // Catch-all
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../dist/index.html'));
+// });
 
-// For local development
-if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
-
-// Export for Vercel Serverless
-module.exports = app;
+// For local development and Docker
+// if (require.main === module) {
+//    app.listen(PORT, () => {
+//        console.log(`Server running on port ${PORT}`);
+//    });
+// }
+// module.exports = app;
