@@ -1,7 +1,7 @@
 import React from 'react';
 import './Hero.css';
 
-const Hero = () => {
+const Hero = ({ activeCount = 0 }) => {
     return (
         <section className="hero">
             <div className="container hero-content">
@@ -14,7 +14,7 @@ const Hero = () => {
                 </p>
                 <div className="hero-stats">
                     <div className="stat-item">
-                        <span className="stat-value">12</span>
+                        <span className="stat-value">{activeCount}</span>
                         <span className="stat-label">Active Outages</span>
                     </div>
                     <div className="stat-item">

@@ -32,42 +32,11 @@ const FlyToLocation = ({ destination }) => {
     return null;
 };
 
-const MapSection = () => {
+const MapSection = ({ outages = [] }) => {
     // Indonesia Center Coordinates
     const center = [-2.5489, 118.0149];
     const zoom = 5;
     const [flyToDest, setFlyToDest] = useState(null);
-    const [outages, setOutages] = useState([]);
-
-    useEffect(() => {
-        const fetchOutages = async () => {
-            try {
-                // In production (same origin), use relative path. In dev, could be localhost.
-                // Since we proxy or run on same port in prod, relative '/api' works if served by express.
-                // For local Dev (Vite 5173 -> Node 3001), we need full URL or proxy.
-                const apiUrl = import.meta.env.PROD ? '' : 'http://localhost:3001';
-                const response = await fetch(`${apiUrl}/api/outages`);
-                const data = await response.json();
-                if (data.data) {
-                    // API returns data in 'data' field. 
-                    // Make sure format matches what we expect: { lat, lng } vs { position: [lat, lng] }
-                    // DB has lat, lng columns.
-                    const formattedDetails = data.data.map(o => ({
-                        ...o,
-                        position: [o.lat, o.lng]
-                    }));
-                    setOutages(formattedDetails);
-                }
-            } catch (error) {
-                console.error("Failed to fetch outages:", error);
-            }
-        };
-
-        fetchOutages();
-        // Poll every 60 seconds
-        const interval = setInterval(fetchOutages, 60000);
-        return () => clearInterval(interval);
-    }, []);
 
     const handleLocationSelect = (location) => {
         setFlyToDest(location);

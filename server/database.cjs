@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
 // Use DATABASE_URL from environment (Vercel standard)
