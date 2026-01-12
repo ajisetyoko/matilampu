@@ -151,9 +151,9 @@ app.get('/api/init', async (req, res) => {
 // });
 
 // For local development and Docker
-// if (require.main === module) {
-//    app.listen(PORT, () => {
-//        console.log(`Server running on port ${PORT}`);
-//    });
-// }
-// module.exports = app;
+if (require.main === module) {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+module.exports = app;

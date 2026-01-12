@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import './SearchControl.css';
 
-const SearchControl = ({ onLocationSelect }) => {
+const SearchControl = ({ onLocationSelect, className = '' }) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -35,7 +35,7 @@ const SearchControl = ({ onLocationSelect }) => {
     };
 
     return (
-        <div className="search-control">
+        <div className={`search-control ${className}`}>
             <form onSubmit={handleSearch} className="search-form">
                 <input
                     type="text"

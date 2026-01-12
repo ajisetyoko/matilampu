@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation } from 'lucide-react';
-import '../components/Hero.css'; // Reusing some hero styles for buttons/titles
+import { MapPin, Navigation, AlertTriangle } from 'lucide-react';
+import SearchControl from '../components/SearchControl';
+import '../components/Hero.css';
 
 const ReportOutage = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const ReportOutage = () => {
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const [locationSource, setLocationSource] = useState(null); // 'gps' or 'manual'
 
     const handleLocate = () => {
         if (navigator.geolocation) {
@@ -23,7 +25,7 @@ const ReportOutage = () => {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     }));
-                    // Ideally fetch city name from reverse geocoding here, but for now just raw coords
+                    setLocationSource('gps');
                     setLoading(false);
                 },
                 (error) => {
@@ -37,10 +39,22 @@ const ReportOutage = () => {
         }
     };
 
+    const handleSearchSelect = (location) => {
+        setFormData(prev => ({
+            ...prev,
+            lat: location.lat,
+            lng: location.lng,
+            // Simple heuristic to split name, user can edit
+            city: location.name.split(',')[0],
+            area: location.name.split(',').slice(1, 3).join(',').trim()
+        }));
+        setLocationSource('manual');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.lat || !formData.lng) {
-            setMessage("Please include your location.");
+            setMessage("Please set your location (GPS or Search).");
             return;
         }
 
@@ -56,6 +70,7 @@ const ReportOutage = () => {
             if (response.ok) {
                 setMessage(data.isNew ? "Report Submitted!" : "Report Renewed (Heartbeat)!");
                 setFormData({ city: '', area: '', cause: '', lat: '', lng: '' });
+                setLocationSource(null);
             } else {
                 setMessage("Error: " + data.error);
             }
@@ -75,7 +90,19 @@ const ReportOutage = () => {
                     Reports will be shown on the map for 30 minutes.
                 </p>
 
+                <div style={{ width: '100%', maxWidth: '500px', marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', color: '#aaa' }}>Option 1: Search Location</label>
+                    <SearchControl onLocationSelect={handleSearchSelect} className="embedded" />
+                </div>
+
+                <div style={{ width: '100%', maxWidth: '500px', display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0' }}>
+                    <div style={{ flex: 1, height: '1px', background: '#333' }}></div>
+                    <span style={{ color: '#666' }}>OR</span>
+                    <div style={{ flex: 1, height: '1px', background: '#333' }}></div>
+                </div>
+
                 <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '-0.5rem', color: '#aaa' }}>Option 2: Use GPS</label>
                     <button
                         type="button"
                         onClick={handleLocate}
@@ -86,12 +113,28 @@ const ReportOutage = () => {
                             border: 'none', padding: '1rem', borderRadius: '8px', fontWeight: 'bold'
                         }}
                     >
-                        {loading && !formData.lat ? "Locating..." : <><Navigation size={20} /> Use My GPS Location</>}
+                        {loading && !formData.lat ? "Locating..." : <><Navigation size={20} /> Use My Current Location</>}
                     </button>
 
                     {formData.lat && (
-                        <div style={{ fontSize: '0.9rem', color: '#00ff7f', textAlign: 'center' }}>
-                            Coordinates: {parseFloat(formData.lat).toFixed(4)}, {parseFloat(formData.lng).toFixed(4)}
+                        <div style={{
+                            padding: '1rem', borderRadius: '8px',
+                            background: locationSource === 'gps' ? 'rgba(0, 255, 127, 0.1)' : 'rgba(255, 165, 0, 0.1)',
+                            border: `1px solid ${locationSource === 'gps' ? '#00ff7f' : 'orange'}`,
+                            textAlign: 'center'
+                        }}>
+                            <div style={{ color: locationSource === 'gps' ? '#00ff7f' : 'orange', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                                {locationSource === 'gps' ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}><MapPin size={16} /> GPS Location Locked</span> :
+                                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}><AlertTriangle size={16} /> Manual Location Selected</span>}
+                            </div>
+                            <div style={{ fontSize: '0.85rem', color: '#ccc' }}>
+                                {parseFloat(formData.lat).toFixed(4)}, {parseFloat(formData.lng).toFixed(4)}
+                            </div>
+                            {locationSource === 'manual' && (
+                                <div style={{ fontSize: '0.8rem', color: 'orange', marginTop: '0.5rem' }}>
+                                    Note: Manual reports may be less accurate than GPS.
+                                </div>
+                            )}
                         </div>
                     )}
 

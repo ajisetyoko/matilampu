@@ -8,6 +8,16 @@
     font-family: var(--font-main);
 }
 
+/* Modifier for embedding in normal document flow */
+.search-control.embedded {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    max-width: 100%;
+    z-index: 10;
+}
+
 .search-form {
     display: flex;
     background: var(--surface-color);
