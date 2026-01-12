@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Zap } from 'lucide-react';
+import { Zap, Github } from 'lucide-react';
 import './Header.css';
 
 const Header = () => {
@@ -18,6 +18,16 @@ const Header = () => {
                     <Link to="/" className={`nav-link ${isActive('/')}`}>Map</Link>
                     <Link to="/report" className={`nav-link ${isActive('/report')}`}>Report Outage</Link>
                     <Link to="/leaderboard" className={`nav-link ${isActive('/leaderboard')}`}>Leaderboard</Link>
+                    <a
+                        href="https://github.com/ajisetyoko/matilampu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="nav-link"
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                        <Github size={18} />
+                        GitHub
+                    </a>
                 </nav>
             </div>
         </header>
