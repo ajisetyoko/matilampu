@@ -1,4 +1,4 @@
-const httpProxy = require('http-proxy');
+import httpProxy from 'http-proxy';
 
 // Create a proxy instance
 const proxy = httpProxy.createProxyServer({});
@@ -12,7 +12,7 @@ proxy.on('error', (err, req, res) => {
     res.end(JSON.stringify({ error: 'Proxy error', message: err.message }));
 });
 
-module.exports = (req, res) => {
+export default (req, res) => {
     const backendUrl = process.env.BACKEND_URL;
 
     if (!backendUrl) {
