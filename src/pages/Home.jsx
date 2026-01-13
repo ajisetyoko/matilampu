@@ -8,9 +8,8 @@ const Home = () => {
     useEffect(() => {
         const fetchOutages = async () => {
             try {
-                // Use env var for separate backend, or localhost for local dev
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-                const response = await fetch(`${apiUrl}/api/outages`);
+                // Use relative path for proxying in both dev (Vite) and prod (Vercel)
+                const response = await fetch(`/api/outages`);
                 const data = await response.json();
                 if (data.data) {
                     // DB has lat, lng columns.

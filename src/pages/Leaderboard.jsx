@@ -5,8 +5,7 @@ const Leaderboard = () => {
     const [outages, setOutages] = useState([]);
 
     useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-        fetch(`${apiUrl}/api/leaderboard`)
+        fetch(`/api/leaderboard`)
             .then(res => res.json())
             .then(data => {
                 if (data.data) setOutages(data.data);

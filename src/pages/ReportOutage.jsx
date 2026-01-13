@@ -60,10 +60,7 @@ const ReportOutage = () => {
 
         setLoading(true);
         try {
-            let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            // Remove trailing slash if present to avoid double slashes
-            apiUrl = apiUrl.replace(/\/$/, "");
-            const response = await fetch(`${apiUrl}/api/report`, {
+            const response = await fetch(`/api/report`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
